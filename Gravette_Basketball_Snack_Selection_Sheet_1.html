@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gravette Girls Basketball — Snack Selection Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f8f8f6;
+    color: #0d0d0d;
+    padding: 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #0d0d0d;
+  }
+
+  .logos {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .logos img {
+    height: 72px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .logo-divider {
+    width: 1px;
+    height: 48px;
+    background: #ccc;
+  }
+
+  .header-text {
+    text-align: right;
+  }
+
+  .header-text h1 {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .header-text p {
+    font-size: 13px;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  .intro {
+    background: #0d0d0d;
+    color: #f8f8f6;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+
+  .intro p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #e0e0dc;
+  }
+
+  .intro p + p { margin-top: 10px; }
+  .intro strong { color: #F5820A; }
+
+  /* Level tabs */
+  .level-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .level-tab {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1.5px solid #ccc;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    transition: all 0.15s;
+    color: #555;
+  }
+
+  .level-tab.active {
+    background: #0d0d0d;
+    color: #F5820A;
+    border-color: #0d0d0d;
+  }
+
+  .level-tab:hover:not(.active) {
+    border-color: #F5820A;
+    color: #F5820A;
+  }
+
+  .level-panel { display: none; }
+  .level-panel.active { display: block; }
+
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #F5820A;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+  }
+
+  .level-scope {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .level-scope strong { color: #0d0d0d; }
+
+  .category-section { margin-bottom: 28px; }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .category-label {
+    background: #0d0d0d;
+    color: #F5820A;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+
+  .category-desc {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+  }
+
+  .product-card {
+    background: #fff;
+    border: 1px solid #e0ddd6;
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+  }
+
+  .product-card:hover { border-color: #F5820A; background: #fffaf5; }
+
+  .product-card.selected {
+    border-color: #F5820A;
+    background: #fff7ee;
+  }
+
+  .product-card.selected .checkbox {
+    background: #F5820A;
+    border-color: #F5820A;
+  }
+
+  .product-card.selected .checkbox::after {
+    content: '';
+    display: block;
+    width: 9px;
+    height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+
+  .product-card.recommended { border-color: #F5820A; border-width: 1.5px; }
+
+  .product-card.recommended .rec-badge { display: inline-block; }
+
+  .rec-badge {
+    display: none;
+    position: absolute;
+    top: -1px;
+    right: 10px;
+    background: #F5820A;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 0 0 5px 5px;
+  }
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .product-info { flex: 1; }
+
+  .product-name {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #0d0d0d;
+  }
+
+  .product-desc {
+    font-size: 12px;
+    color: #777;
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #e5e2db;
+    margin: 8px 0 20px;
+  }
+
+  .practice-note {
+    background: #fff7ee;
+    border: 1.5px dashed #F5820A;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .practice-note strong { color: #F5820A; }
+
+  .selection-summary {
+    background: #fff;
+    border: 1px solid #e0ddd6;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 28px;
+    display: none;
+  }
+
+  .selection-summary.visible { display: block; }
+
+  .selection-summary h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .selected-list {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.8;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: border-color 0.15s;
+  }
+
+  .reset-btn:hover { border-color: #F5820A; color: #F5820A; }
+
+  .print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #F5820A;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 28px;
+    transition: background 0.15s;
+  }
+
+  .print-btn:hover { background: #d9720a; }
+
+  .footer-note {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+    color: #888;
+    line-height: 1.7;
+  }
+
+  @media print {
+    .print-btn, .reset-btn, .level-tabs { display: none !important; }
+    .level-panel { display: block !important; }
+    body { padding: 20px; background: #fff; }
+    .product-card { break-inside: avoid; }
+    .selection-summary { display: block !important; border: 1.5px solid #0d0d0d; }
+    .product-card.selected { border: 2px solid #0d0d0d !important; background: #fff !important; }
+    .product-card.selected .checkbox { background: #fff !important; border: 2px solid #0d0d0d !important; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">&#128438; Print this sheet</button>
+
+<div class="header">
+  <div class="logos">
+    <img src="https://cdn.shopify.com/s/files/1/0916/0458/2767/files/Gravette.png?v=1776803833" alt="Gravette High School" onerror="this.style.display='none'">
+    <div class="logo-divider"></div>
+    <img src="https://cdn.shopify.com/s/files/1/0916/0458/2767/files/Wellsnax_Logo.png" alt="WellSnax" onerror="this.style.display='none'" style="height:40px;">
+  </div>
+  <div class="header-text">
+    <h1>Snack Selection Sheet</h1>
+    <p>Gravette Girls Basketball &mdash; 2026&ndash;27 Season</p>
+  </div>
+</div>
+
+<div class="intro">
+  <p>Below are snack options organized by team level. Each level has its own program scope based on what you outlined. <strong>Recommended</strong> items are our suggested starting point for each timing window.</p>
+  <p>Check anything that looks good and send your picks back to us. Once we have your selections confirmed, we will put together a full cost breakdown for the season.</p>
+</div>
+
+<!-- LEVEL TABS -->
+<div class="level-tabs">
+  <div class="level-tab active" onclick="switchTab('sr')">&#127936; Sr. High (16 athletes)</div>
+  <div class="level-tab" onclick="switchTab('jr')">&#127936; Jr. High (20 athletes)</div>
+  <div class="level-tab" onclick="switchTab('7th')">&#127936; 7th Grade (14 athletes)</div>
+</div>
+
+<!-- SR HIGH PANEL -->
+<div class="level-panel active" id="panel-sr">
+  <div class="level-badge">&#9971; Senior High &mdash; All Games (Home &amp; Away)</div>
+  <div class="level-scope">
+    <strong>16 athletes &nbsp;|&nbsp; 15 home + 15 away games &nbsp;|&nbsp; Full game day program</strong><br>
+    Pre-game, halftime, post-game recovery. Practice snacks TBD &mdash; see note below.
+  </div>
+
+  <!-- PRE-GAME -->
+  <div class="category-section">
+    <div class="category-header">
+      <span class="category-label">&#9889; Pre-Game Energy</span>
+      <span class="category-desc">Morning of the game, before warmups</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card recommended" onclick="toggle(this)" data-name="Honey Stinger Cookies &amp; Cream Waffle (Sr. High Pre-Game)">
+        <div class="rec-badge">Recommended</div>
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Honey Stinger Cookies &amp; Cream Waffle</div>
+          <div class="product-desc">Fast-acting carbs, easy to eat before tip-off, popular with athletes</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Honey Stinger Honey Energy Waffle (Sr. High Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Honey Stinger Honey Energy Waffle</div>
+          <div class="product-desc">Same fast-acting fuel, classic honey flavor</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Honey Stinger Original Oat + Honey Bar (Sr. High Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Honey Stinger Oat + Honey Bar</div>
+          <div class="product-desc">Slower release from oats, good if eating 60+ min before tip</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Clif Bar Chocolate Chip Energy Bar (Sr. High Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Clif Bar Chocolate Chip</div>
+          <div class="product-desc">Familiar, filling pre-game option with sustained carb release</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- HALFTIME -->
+  <div class="category-section">
+    <div class="category-header">
+      <span class="category-label">&#128293; Halftime</span>
+      <span class="category-desc">Quick refuel during the halftime break</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card recommended" onclick="toggle(this)" data-name="Mott's Fruit Snacks (Sr. High Halftime)">
+        <div class="rec-badge">Recommended</div>
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Mott's Fruit Snacks</div>
+          <div class="product-desc">Fast carb refuel, easy to eat quickly, no mess</div>
+        </div>
+      </div>
+      <div class="product-card recommended" onclick="toggle(this)" data-name="LMNT Citrus Salt Electrolyte Stick (Sr. High Halftime)">
+        <div class="rec-badge">Recommended</div>
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">LMNT Citrus Salt Electrolyte Stick</div>
+          <div class="product-desc">High sodium replenishment, pairs with water at halftime</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="LMNT Raspberry Salt Electrolyte Stick (Sr. High Halftime)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">LMNT Raspberry Salt Electrolyte Stick</div>
+          <div class="product-desc">Same electrolyte profile, different flavor</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Liquid IV Lemon Lime Electrolyte Stick (Sr. High Halftime)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Liquid IV Lemon Lime</div>
+          <div class="product-desc">Lighter sodium option, good alternative to LMNT</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="GoGo Squeeze Electrolyte Fruit Blend (Sr. High Halftime)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">GoGo Squeeze Electrolyte Fruit Blend</div>
+          <div class="product-desc">Fruit pouch with electrolytes, fast and easy mid-game</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- POST-GAME -->
+  <div class="category-section">
+    <div class="category-header">
+      <span class="category-label">&#128170; Post-Game Recovery</span>
+      <span class="category-desc">Within 30 minutes after the final buzzer</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card recommended" onclick="toggle(this)" data-name="Core Power Chocolate Protein Shake 26g (Sr. High Post-Game)">
+        <div class="rec-badge">Recommended</div>
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Core Power Chocolate Shake 26g</div>
+          <div class="product-desc">26g protein, fast muscle recovery after a full game</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Core Power Vanilla Protein Shake 26g (Sr. High Post-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Core Power Vanilla Shake 26g</div>
+          <div class="product-desc">Same recovery profile, vanilla flavor option</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Core Power ELITE Chocolate Shake 42g (Sr. High Post-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Core Power ELITE Chocolate Shake 42g</div>
+          <div class="product-desc">42g protein, higher output recovery for intensive game days or tournament weekends</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PRACTICE -->
+  <div class="practice-note">
+    <strong>Practice Snacks (Sr. High)</strong> &mdash; You mentioned interest in daily practice snacks. Once we confirm the number of practice days per week and the portion of the season you want covered, we will add a practice snack option to your quote. In the meantime, check below if any of these lighter everyday options appeal to you.
+  </div>
+
+  <div class="category-section">
+    <div class="category-header">
+      <span class="category-label">&#127807; Practice Day Options</span>
+      <span class="category-desc">Lighter everyday fuel for practice days</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card" onclick="toggle(this)" data-name="Honey Stinger Honey Energy Waffle (Practice)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Honey Stinger Honey Energy Waffle</div>
+          <div class="product-desc">Fast-acting carbs, light and easy before or after practice</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Clif Kid Zbar Chocolate Chip (Practice)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Clif Kid Zbar Chocolate Chip</div>
+          <div class="product-desc">Lighter everyday bar, good for all age levels</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="That's It Apple + Mango Fruit Bar (Practice)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">That's It Apple + Mango Fruit Bar</div>
+          <div class="product-desc">Simple whole-fruit snack, no added sugar, allergen friendly</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Nature's Bakery Strawberry Fig Bar (Practice)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Nature's Bakery Strawberry Fig Bar</div>
+          <div class="product-desc">Soft fig bar, light everyday snack, easy to grab and go</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Bobo's Grape PB&amp;J Oat Crust Bar (Practice)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Bobo's Grape PB&amp;J Oat Crust Bar</div>
+          <div class="product-desc">Soft-baked oat bar, satisfying and filling for longer practice days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JR HIGH PANEL -->
+<div class="level-panel" id="panel-jr">
+  <div class="level-badge">&#9971; Jr. High &mdash; Away Games Only</div>
+  <div class="level-scope">
+    <strong>20 athletes &nbsp;|&nbsp; 12 away games &nbsp;|&nbsp; Pre-game snack only</strong><br>
+    One snack per athlete per away game. Simple and easy to pack and distribute on the road.
+  </div>
+
+  <div class="category-section">
+    <div class="category-header">
+      <span class="category-label">&#9889; Pre-Game Snack</span>
+      <span class="category-desc">Eaten before warmups on away game days</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card recommended" onclick="toggle(this)" data-name="Honey Stinger Cookies &amp; Cream Waffle (Jr. High Pre-Game)">
+        <div class="rec-badge">Recommended</div>
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Honey Stinger Cookies &amp; Cream Waffle</div>
+          <div class="product-desc">Fast-acting carbs, easy to pack for away trips</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Honey Stinger Honey Energy Waffle (Jr. High Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Honey Stinger Honey Energy Waffle</div>
+          <div class="product-desc">Same fuel, classic honey flavor</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Clif Bar Chocolate Chip (Jr. High Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Clif Bar Chocolate Chip</div>
+          <div class="product-desc">Familiar and filling, easy to pack in bulk</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="That's It Apple + Mango Fruit Bar (Jr. High Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">That's It Apple + Mango Fruit Bar</div>
+          <div class="product-desc">Light natural carbs, allergen friendly, no mess</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Mott's Fruit Snacks (Jr. High Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Mott's Fruit Snacks</div>
+          <div class="product-desc">Quick carbs, easy to distribute, athletes enjoy them</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7TH GRADE PANEL -->
+<div class="level-panel" id="panel-7th">
+  <div class="level-badge">&#9971; 7th Grade &mdash; Away Games Only</div>
+  <div class="level-scope">
+    <strong>14 athletes &nbsp;|&nbsp; 10 away games &nbsp;|&nbsp; Pre-game snack only</strong><br>
+    Same structure as Jr. High. One snack per athlete per away game.
+  </div>
+
+  <div class="category-section">
+    <div class="category-header">
+      <span class="category-label">&#9889; Pre-Game Snack</span>
+      <span class="category-desc">Eaten before warmups on away game days</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card recommended" onclick="toggle(this)" data-name="Honey Stinger Honey Energy Waffle (7th Grade Pre-Game)">
+        <div class="rec-badge">Recommended</div>
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Honey Stinger Honey Energy Waffle</div>
+          <div class="product-desc">Great for younger athletes, fast carbs without being too heavy</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Clif Kid Zbar Chocolate Chip (7th Grade Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Clif Kid Zbar Chocolate Chip</div>
+          <div class="product-desc">Sized and formulated for younger athletes, easy to eat on the go</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Clif Kid Zbar Iced Oatmeal Cookie (7th Grade Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Clif Kid Zbar Iced Oatmeal Cookie</div>
+          <div class="product-desc">Same kid-friendly profile, different flavor</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="That's It Apple + Banana Fruit Bar (7th Grade Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">That's It Apple + Banana Fruit Bar</div>
+          <div class="product-desc">Light and simple, allergen friendly, good for younger athletes</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="Mott's Fruit Snacks (7th Grade Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">Mott's Fruit Snacks</div>
+          <div class="product-desc">Familiar and fun, fast carbs, easy to distribute</div>
+        </div>
+      </div>
+      <div class="product-card" onclick="toggle(this)" data-name="GoGo Squeeze Electrolyte Fruit Blend (7th Grade Pre-Game)">
+        <div class="checkbox"></div>
+        <div class="product-info">
+          <div class="product-name">GoGo Squeeze Electrolyte Fruit Blend</div>
+          <div class="product-desc">Fruit pouch with electrolytes, popular with younger age groups</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="selection-summary" id="summary">
+  <h3>Your current selections</h3>
+  <div class="selected-list" id="selected-list"></div>
+  <button class="reset-btn" onclick="resetAll()">Clear all selections</button>
+</div>
+
+<div class="footer-note">
+  <strong>Recommended</strong> items are our suggested starting point based on your program scope and sport. You are welcome to swap any item or mix and match across options. Once you send your selections back, we will put together a full cost breakdown by level for the season. Questions? Reach us at team@wellsnax.com.
+</div>
+
+<script>
+  function switchTab(level) {
+    document.querySelectorAll('.level-tab').forEach((t, i) => {
+      const ids = ['sr', 'jr', '7th'];
+      t.classList.toggle('active', ids[i] === level);
+    });
+    document.querySelectorAll('.level-panel').forEach(p => {
+      p.classList.toggle('active', p.id === 'panel-' + level);
+    });
+  }
+
+  function toggle(card) {
+    card.classList.toggle('selected');
+    updateSummary();
+  }
+
+  function updateSummary() {
+    const selected = document.querySelectorAll('.product-card.selected');
+    const summary = document.getElementById('summary');
+    const list = document.getElementById('selected-list');
+    if (selected.length === 0) {
+      summary.classList.remove('visible');
+      return;
+    }
+    summary.classList.add('visible');
+    list.innerHTML = Array.from(selected).map(c => '&#10003; ' + c.dataset.name).join('<br>');
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.product-card.selected').forEach(c => c.classList.remove('selected'));
+    updateSummary();
+  }
+</script>
+
+</body>
+</html>
